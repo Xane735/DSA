@@ -1,74 +1,34 @@
-import sys
+def heapify(arr, i, n):
+    largest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
 
-class MaxHeap:
-    def __init__(self, cap):
-        self.cap = cap
-        self.n = 0
-        self.a = [0] * (cap + 1)
-        self.a[0] = sys.maxsize
-        self.root = 1
+    # If left child exists and is larger than root
+    if l < n and arr[l] > arr[largest]:
+        largest = l
 
-    def parent(self, i):
-        return i // 2
+    # If right child exists and is larger than largest so far
+    if r < n and arr[r] > arr[largest]:
+        largest = r
 
-    def left(self, i):
-        return 2 * i
+    # If largest is not root, swap and continue heapifying
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        # Recursively heapify
+        heapify(arr, largest, n)
 
-    def right(self, i):
-        return 2 * i + 1
 
-    def isLeaf(self, i):
-        return i > (self.n // 2) and i <= self.n
-
-    def swap(self, i, j):
-        self.a[i], self.a[j] = self.a[j], self.a[i]
-
-    def maxHeapify(self, i):
-        if not self.isLeaf(i):
-            largest = i
-            if self.left(i) <= self.n and self.a[i] < self.a[self.left(i)]:
-                largest = self.left(i)
-            if self.right(i) <= self.n and self.a[largest] < self.a[self.right(i)]:
-                largest = self.right(i)
-            if largest != i:
-                self.swap(i, largest)
-                self.maxHeapify(largest)
-
-    def insert(self, val):
-        if self.n >= self.cap:
-            return
-        self.n += 1
-        self.a[self.n] = val
-        i = self.n
-        while self.a[i] > self.a[self.parent(i)]:
-            self.swap(i, self.parent(i))
-            i = self.parent(i)
-
-    def extractMax(self):
-        if self.n == 0:
-            return None
-        max_val = self.a[self.root]
-        self.a[self.root] = self.a[self.n]
-        self.n -= 1
-        self.maxHeapify(self.root)
-        return max_val
-
-    def printHeap(self):
-        for i in range(1, (self.n // 2) + 1):
-            print(f"PARENT: {self.a[i]}", end=" ")
-            if self.left(i) <= self.n:
-                print(f"LEFT: {self.a[self.left(i)]}", end=" ")
-            if self.right(i) <= self.n:
-                print(f"RIGHT: {self.a[self.right(i)]}", end=" ")
-            print()
-
-# Example 
 if __name__ == "__main__":
-    print("The maxHeap is:")
-    h = MaxHeap(15)
-    vals = [5, 3, 17, 10, 84, 19, 6, 22, 9]
-    for val in vals:
-        h.insert(val)
+    arr = [10, 5, 15, 2, 20, 30]
+    print("Original array:", end=" ")
+    for i in range(len(arr)):
+        print(arr[i], end=" ")
 
-    h.printHeap()
-    print("The Max val is", h.extractMax())
+    # Build max-heap
+    for i in range(len(arr)//2 - 1, -1, -1):
+        heapify(arr, i, len(arr))
+
+    # Print array after max-heapify
+    print("\nMax-Heap after heapify operation:", end=" ")
+    for i in range(len(arr)):
+        print(arr[i], end=" ")

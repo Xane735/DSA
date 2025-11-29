@@ -1,77 +1,33 @@
-class MinHeap:
-    def __init__(self):
-        self.a = []
+def heapify(arr, i, n):
+    smallest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
 
-    """Insert a new element into the Min Heap."""
-    def insert(self, val):
-        self.a.append(val)
-        i = len(self.a) - 1
-        while i > 0 and self.a[(i - 1) // 2] > self.a[i]:
-            self.a[i], self.a[(i - 1) // 2] = self.a[(i - 1) // 2], self.a[i]
-            i = (i - 1) // 2
+    # If left child exists and is smaller than root
+    if l < n and arr[l] < arr[smallest]:
+        smallest = l
 
-    """Delete a specific element from the Min Heap."""
-    def delete(self, value):
-        i = -1
-        for j in range(len(self.a)):
-            if self.a[j] == value:
-                i = j
-                break
-        if i == -1:
-            return
-        self.a[i] = self.a[-1]
-        self.a.pop()
-        while True:
-            left = 2 * i + 1
-            right = 2 * i + 2
-            smallest = i
-            if left < len(self.a) and self.a[left] < self.a[smallest]:
-                smallest = left
-            if right < len(self.a) and self.a[right] < self.a[smallest]:
-                smallest = right
-            if smallest != i:
-                self.a[i], self.a[smallest] = self.a[smallest], self.a[i]
-                i = smallest
-            else:
-                break
+    # If right child exists and is smaller than smallest so far
+    if r < n and arr[r] < arr[smallest]:
+        smallest = r
 
-    """Heapify function to maintain the heap property.""" 
-    def minHeapify(self, i, n):
-        smallest = i
-        left = 2 * i + 1
-        right = 2 * i + 2
+    # If smallest is not root,
+    # swap and continue heapifying
+    if smallest != i:
+        arr[i], arr[smallest] = arr[smallest], arr[i]
+        # Recursively heapify
+        heapify(arr, smallest, n)
 
-        if left < n and self.a[left] < self.a[smallest]:
-            smallest = left
-        if right < n and self.a[right] < self.a[smallest]:
-            smallest = right
-        if smallest != i:
-            self.a[i], self.a[smallest] = self.a[smallest], self.a[i]
-            self.minHeapify(smallest, n)
 
-    """Search for an element in the Min Heap."""
-    def search(self, element):
-        for j in self.a:
-            if j == element:
-                return True
-        return False
-
-    def getMin(self):
-        return self.a[0] if self.a else None
-
-    def printHeap(self):
-        print("Min Heap:", self.a)
-
-# Example Usage
 if __name__ == "__main__":
-    h = MinHeap()
-    values = [10, 7, 11, 5, 4, 13]
-    for value in values:
-        h.insert(value)
-    h.printHeap()
-    
-    h.delete(7)
-    print("Heap after deleting 7:", h.a)
-    
-    print("Searching for 10 in heap:", "Found" if h.search(10) else "Not Found")
-    print("Minimum element in heap:", h.getMin())
+    arr = [2, 3, 10, 4, 5, 1]
+
+    # Print original array
+    print("Original array: ", " ".join(str(x) for x in arr))
+
+    # Build min-heap: perform heapify from last non-leaf node up to root
+    for i in range(len(arr) // 2 - 1, -1, -1):
+        heapify(arr, i, len(arr))
+
+   
+    print("Min-Heap after heapify operation: ", " ".join(str(x) for x in arr))
